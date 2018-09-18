@@ -10,8 +10,11 @@ var departments = [];
 
 // Read contents of the "./data/employees.json"
 exports.initialize = () => {
-    filesHaveBeenRead.then(value => console.log(value));
-    filesHaveBeenRead.catch(error => console.log(error));
+    return filesHaveBeenRead;
+}
+
+exports.getAllEmployees = () => {
+    return employeesContainData;
 }
 
 // Promise for reading files
@@ -28,3 +31,12 @@ var filesHaveBeenRead = new Promise((resolve, reject) => {
         }
     });
 });
+
+// Check if employees array contains data
+var employeesContainData = new Promise((resolve, reject) => {
+    // if (employees.length > 0)
+    //     resolve(employees);
+    // else 
+    //     reject('No employees found!');
+    console.log(employees.length);
+})

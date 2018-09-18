@@ -26,7 +26,7 @@ app.set('views', path.join(__dirname, '/views'));
 // setup a 'route' to listen on the default url path
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname + "/views/home.html"));
-    dataService.initialize();
+    res.send(dataService.initialize());
 });
 
 app.get("/about", (req, res) => {
@@ -35,7 +35,7 @@ app.get("/about", (req, res) => {
 
 // Requests
 app.get('/managers', (req, res) => {
-    
+    res.send(dataService.getAllEmployees());
 });
 
 // setup http server to listen on HTTP_PORT
