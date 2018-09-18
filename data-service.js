@@ -10,7 +10,8 @@ var departments = [];
 
 // Read contents of the "./data/employees.json"
 exports.initialize = () => {
-    filesHaveBeenRead.then()
+    filesHaveBeenRead.then(value => console.log(value));
+    filesHaveBeenRead.catch(error => console.log(error));
 }
 
 // Promise for reading files
