@@ -11,19 +11,32 @@
 ********************************************************************************/
 
 var express = require("express");
+var path = require('path');
 var app = express();
+
+var dataService = require('./data-service');
 
 // PORT Config
 var HTTP_PORT = process.env.PORT || 8080;
 
+// Configure the public folder
+app.use(express.static('public'));
+app.set('views', path.join(__dirname, '/views'));
+
 // setup a 'route' to listen on the default url path
 app.get("/", (req, res) => {
-    var student = {
-        name: "Lean Junio",
-        studentNumber: "019-109-123"
-    }
-    res.send(`${student.name} - ${student.studentNumber}`);
+    res.sendFile(path.join(__dirname + "/views/home.html"));
+    dataService.initialize();
+});
+
+app.get("/about", (req, res) => {
+    res.sendFile(path.join(__dirname + "/views/about.html"))
+});
+
+// Requests
+app.get('/managers', (req, res) => {
+    
 });
 
 // setup http server to listen on HTTP_PORT
-app.listen(HTTP_PORT);
+app.listen(HTTP_PORT, ()=> console.log(`Express http server listening on ${HTTP_PORT}`));
