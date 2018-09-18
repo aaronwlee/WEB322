@@ -14,7 +14,7 @@ var express = require("express");
 var path = require('path');
 var app = express();
 
-var dataService = require('./data-service');
+var routes = require('./routes/routes');
 
 // PORT Config
 var HTTP_PORT = process.env.PORT || 8080;
@@ -24,19 +24,7 @@ app.use(express.static('public'));
 app.set('views', path.join(__dirname, '/views'));
 
 // setup a 'route' to listen on the default url path
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname + "/views/home.html"));
-    res.send(dataService.initialize());
-});
-
-app.get("/about", (req, res) => {
-    res.sendFile(path.join(__dirname + "/views/about.html"))
-});
-
-// Requests
-app.get('/managers', (req, res) => {
-    res.send(dataService.getAllEmployees());
-});
+app.use('/', routes);
 
 // setup http server to listen on HTTP_PORT
 app.listen(HTTP_PORT, ()=> console.log(`Express http server listening on ${HTTP_PORT}`));

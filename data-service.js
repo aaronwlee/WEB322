@@ -8,15 +8,6 @@ let department_file = 'data/departments.json';
 var employees = [];
 var departments = [];
 
-// Read contents of the "./data/employees.json"
-exports.initialize = () => {
-    return filesHaveBeenRead;
-}
-
-exports.getAllEmployees = () => {
-    return employeesContainData;
-}
-
 // Promise for reading files
 var filesHaveBeenRead = new Promise((resolve, reject) => {
     fs.readFile(employee_file, (err, data) => {
@@ -34,9 +25,16 @@ var filesHaveBeenRead = new Promise((resolve, reject) => {
 
 // Check if employees array contains data
 var employeesContainData = new Promise((resolve, reject) => {
-    // if (employees.length > 0)
-    //     resolve(employees);
-    // else 
-    //     reject('No employees found!');
-    console.log(employees.length);
-})
+    if (employees.length > 0) {
+        resolve(employees);
+    }  else reject('No employees found!');
+});
+
+// Read contents of the "./data/employees.json"
+exports.initialize = () => {
+    return filesHaveBeenRead;
+}
+
+exports.getAllEmployees = () => {
+    return employeesContainData;
+}
