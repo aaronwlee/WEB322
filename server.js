@@ -23,8 +23,35 @@ var HTTP_PORT = process.env.PORT || 8080;
 app.use(express.static('public'));
 app.set('views', path.join(__dirname, '/views'));
 
-// setup a 'route' to listen on the default url path
-app.use('/', routes);
+var dataService = require('./data-service');
 
-// setup http server to listen on HTTP_PORT
-app.listen(HTTP_PORT, ()=> console.log(`Express http server listening on ${HTTP_PORT}`));
+// Home page route
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname + "/views/home.html"));
+});
+
+// About page route
+app.get('/about', (req, res) => {
+    res.sendFile(path.join(__dirname + "/views/about.html"));
+});
+
+// Requests
+app.get('/managers', (req, res) => {
+    res.send(`TODO: get all employers that are managers`);
+});
+
+app.get('/employees', (req, res) => {
+    res.send(`TODO: return JSON formatted string containing all of the employees within employees.json`);
+});
+
+app.get('/departments', (req, res) => {
+    res.send(`TODO: return a JSON formatted string containing all of the departments within the departments.json file`);
+});
+
+app.get('/*', (req, res) => {
+    res.send('Page Not Found');
+    res.sendStatus(404);
+})
+
+dataService.initialize();
+

@@ -1,40 +1,37 @@
 const fs = require('fs');
 var exports = module.exports = {};
 
-// Files
 let employee_file = 'data/employees.json';
 let department_file = 'data/departments.json';
 
 var employees = [];
 var departments = [];
 
-// Promise for reading files
-var filesHaveBeenRead = new Promise((resolve, reject) => {
+exports.initialize = () => {
+    p_filesHaveBeenRead.then((data) => {
+        console.log(`INSIDE PROMISE: exports.initialize: employees ${employees.length}`)
+        console.log(`INSIDE PROMISE: exports.initialize: departments ${departments.length}`)
+    })
+    
+    console.log(`OUTSIDE PROMISE: exports.initialize: employees ${employees.length}`)
+    console.log(`OUTSIDE PROMISE: exports.initialize: departments ${departments.length}`)
+}
+
+// Promises
+let p_filesHaveBeenRead = new Promise((resolve, reject) => {
     fs.readFile(employee_file, (err, data) => {
-        if (err) reject(`Error encountered: ${err}`);
+        if (err) reject(`ERROR: Cannot read ${employee_file}`);
         else {
             employees = JSON.parse(data);
+            console.log(`employees.length: ${employees.length}`);
             fs.readFile(department_file, (err, data) => {
-                if (err) reject(`Error encountered: ${err}`);
-                departments = JSON.parse(data);
-                resolve('Files read successfully!');
-            });
+                if (err) reject(`ERROR: Cannot read ${department_file}`);
+                else {
+                    departments = JSON.parse(data);
+                    console.log(`departents.length: ${departments.length}`);
+                    resolve(`READ`);
+                }
+            })
         }
     });
 });
-
-// Check if employees array contains data
-var employeesContainData = new Promise((resolve, reject) => {
-    if (employees.length > 0) {
-        resolve(employees);
-    }  else reject('No employees found!');
-});
-
-// Read contents of the "./data/employees.json"
-exports.initialize = () => {
-    return filesHaveBeenRead;
-}
-
-exports.getAllEmployees = () => {
-    return employeesContainData;
-}
