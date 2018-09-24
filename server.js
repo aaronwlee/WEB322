@@ -53,5 +53,12 @@ app.get('/*', (req, res) => {
     res.sendStatus(404);
 })
 
-dataService.initialize();
+dataService.initialize()
+    .then((data) => {
+        app.listen(HTTP_PORT, () => console.log(`Listening on port ${HTTP_PORT}`));
+        console.log(data);
+    })
+    .catch((err) => {
+        console.log(err);
+    })
 
