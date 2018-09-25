@@ -29,9 +29,8 @@ router.get('/departments', (req, res) => {
     .catch(err => res.json({ message: err}))
 });
 
-router.get('/*', (req, res) => {
-    res.send('Page Not Found');
-    res.sendStatus(404);
-})
+router.get('*', (req, res) => {
+    res.send(`The page does not exist`, 404);
+});
 
 module.exports = router;
