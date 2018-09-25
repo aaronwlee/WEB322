@@ -13,49 +13,17 @@
 var express = require("express");
 var path = require('path');
 var app = express();
-
-var routes = require('./routes/routes');
-
-// PORT Config
 var HTTP_PORT = process.env.PORT || 8080;
+
+// Routes and data-service
+var routes = require('./routes/routes');
+var dataService = require('./data-service');
 
 // Configure the public folder
 app.use(express.static('public'));
 app.set('views', path.join(__dirname, '/views'));
 
-var dataService = require('./data-service');
-
-// Home page route
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + "/views/home.html"));
-});
-
-// About page route
-app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname + "/views/about.html"));
-});
-
-// Requests
-app.get('/managers', (req, res) => {
-    dataService.getManagers()
-    .then(data => res.json(data))
-    .catch(err => res.json({ message: err}))
-});
-
-app.get('/employees', (req, res)  => {
-    res.send(`TODO: return JSON formatted string containing all of the employees within employees.json`);
-});
-
-app.get('/departments', (req, res) => {
-    dataService.getDepartments()
-    .then(data => res.json(data))
-    .catch(err => res.json({ message: err}))
-});
-
-app.get('/*', (req, res) => {
-    res.send('Page Not Found');
-    res.sendStatus(404);
-})
+app.use('/', routes);
 
 dataService.initialize()
     .then(() => app.listen(HTTP_PORT, () => console.log(`Listening on port ${HTTP_PORT}`)))

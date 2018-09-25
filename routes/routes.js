@@ -1,38 +1,37 @@
-// // routes.js - Main routes module
+const express = require('express');
+var path = require('path');
+const router = express.Router();
+var dataService = require('../data-service');
 
-// var express = require('express');
-// var path = require ('path');
-// var router = express.Router();
+router.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname + "../../views/home.html"));
+});
 
-// var dataService = require('../data-service');
+router.get('/about', (req, res) => {
+    res.sendFile(path.join(__dirname + "../../views/about.html"));
+});
 
-// // Home page route
-// router.get('/', (req, res) => {
-//     res.sendFile(path.join(__dirname + "../../views/home.html"));
-//     console.log(`INITIALIZE(): ${dataService.initialize()}`);
-// });
+router.get('/managers', (req, res) => {
+    dataService.getManagers()
+    .then(data => res.json(data))
+    .catch(err => res.json({ message: err}))
+});
 
-// // About page route
-// router.get('/about', (req, res) => {
-//     res.sendFile(path.join(__dirname + "../../views/about.html"));
-// });
+router.get('/employees', (req, res)  => {
+    dataService.getAllEmployees()
+    .then(data => res.json(data))
+    .catch(err => res.json({ message: err}))
+});
 
-// // Requests
-// router.get('/managers', (req, res) => {
-//     res.send(`TODO: get all employers that are managers`);
-// });
+router.get('/departments', (req, res) => {
+    dataService.getDepartments()
+    .then(data => res.json(data))
+    .catch(err => res.json({ message: err}))
+});
 
-// router.get('/employees', (req, res) => {
-//     res.send(`TODO: return JSON formatted string containing all of the employees within employees.json`);
-// });
+router.get('/*', (req, res) => {
+    res.send('Page Not Found');
+    res.sendStatus(404);
+})
 
-// router.get('/departments', (req, res) => {
-//     res.send(`TODO: return a JSON formatted string containing all of the departments within the departments.json file`);
-// });
-
-// router.get('/*', (req, res) => {
-//     res.send('Page Not Found');
-//     res.sendStatus(404);
-// })
-
-// module.exports = router;
+module.exports = router;
