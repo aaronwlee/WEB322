@@ -1,26 +1,48 @@
 const fs = require('fs');
+var exports = module.exports = {};
 
+// Files
 let employee_file = 'data/employees.json';
 let department_file = 'data/departments.json';
 
-var employees = [];
-var departments = [];
+var employeesArr = [];
+var departmentsArr = [];
 
-module.exports.initialize = () => {
-    return new Promise((resolve, reject) => {
-        console.log('Reading files');
-        fs.readFile(employee_file, (err, data) => {
-            if (err) reject ('Could not read employees.json');
-            else employees = JSON.parse(data)
-            console.log(employees.length);
-        });
+// Read contents of the "./data/employees.json"
+let readFiles = new Promise((resolve, reject) => {
+    fs.readFile(employee_file, (err, data) => {
+        if (err) reject('Unable to read file');
+        employeesArr = JSON.parse(data);
         fs.readFile(department_file, (err, data) => {
-            if (err) reject ('Could not read departments.json');
-            else departments = JSON.parse(data)
-            console.log(employees.length); // does not have access to employees array
+            if (err) reject('Unable to read file');
+            departmentsArr = JSON.parse(data);
+            resolve('Read files succesfully!');
         });
+    });
+});
 
-        if (employees.length > 0 && departments.length > 0) 
-            resolve('Succesfully read files!');
+exports.initialize = () => {
+    return readFiles;
+}
+
+exports.getAllEmployees = () => {
+    return new Promise((resolve, reject) => {
+        if (employeesArr.length == 0) reject('No results returned');
+        resolve(employeesArr);
+    });
+}
+
+exports.getManagers = () => {
+    return new Promise((resolve, reject) => {
+        let managers = employeesArr.filter(employee => employee.isManager == true);
+        if (managers == 0) reject('No results returned')
+        resolve(managers);
+    });
+}
+
+exports.getDepartments = () => {
+    return new Promise((resolve, reject) => {
+        if (departmentsArr.length == 0) reject('No results returned');
+        resolve(departmentsArr);
     });
 }

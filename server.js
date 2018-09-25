@@ -37,15 +37,19 @@ app.get('/about', (req, res) => {
 
 // Requests
 app.get('/managers', (req, res) => {
-    res.send(`TODO: get all employers that are managers`);
+    dataService.getManagers()
+    .then(data => res.json(data))
+    .catch(err => res.json({ message: err}))
 });
 
-app.get('/employees', (req, res) => {
+app.get('/employees', (req, res)  => {
     res.send(`TODO: return JSON formatted string containing all of the employees within employees.json`);
 });
 
 app.get('/departments', (req, res) => {
-    res.send(`TODO: return a JSON formatted string containing all of the departments within the departments.json file`);
+    dataService.getDepartments()
+    .then(data => res.json(data))
+    .catch(err => res.json({ message: err}))
 });
 
 app.get('/*', (req, res) => {
@@ -54,11 +58,6 @@ app.get('/*', (req, res) => {
 })
 
 dataService.initialize()
-    .then((data) => {
-        app.listen(HTTP_PORT, () => console.log(`Listening on port ${HTTP_PORT}`));
-        console.log(data);
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+    .then(() => app.listen(HTTP_PORT, () => console.log(`Listening on port ${HTTP_PORT}`)))
+    .catch(err => res.json({ message: err}))
 
