@@ -1,12 +1,12 @@
 /*********************************************************************************
-* WEB322: Assignment 1
+* WEB322: Assignment 2
 * I declare that this assignment is my own work in accordance with Seneca Academic Policy.
 * No part of this assignment has been copied manually or electronically from any other source
 * (including web sites) or distributed to other students.
 *
-* Name: Lean Junio Student ID: 019-1091523 Date: September 4, 2018
+* Name: Lean Junio Student ID: 019-1091523 Date: September 24, 2018
 *
-* Online (Heroku) URL: https://stark-meadow-12652.herokuapp.com/
+* Online (Heroku) URL: https://sheltered-plateau-83740.herokuapp.com/
 *
 ********************************************************************************/
 
