@@ -17,16 +17,31 @@ router.get('/managers', (req, res) => {
     .catch(err => res.json({ message: err}))
 });
 
+/**
+ * Employee Routes
+ */
 router.get('/employees', (req, res)  => {
     dataService.getAllEmployees()
     .then(data => res.json(data))
     .catch(err => res.json({ message: err}))
 });
 
+router.get('/employees/add', (req, res) => {
+    res.sendFile(path.join(__dirname + "../../views/addEmployee.html"));
+});
+
+
 router.get('/departments', (req, res) => {
     dataService.getDepartments()
     .then(data => res.json(data))
     .catch(err => res.json({ message: err}))
+});
+
+/**
+ * Adding Images
+ */
+router.get('/images/add', (req, res) => {
+    res.sendFile(path.join(__dirname + "../../views/addImage.html"));
 });
 
 router.get('*', (req, res) => {
