@@ -30,7 +30,6 @@ router.get('/employees/add', (req, res) => {
     res.sendFile(path.join(__dirname + "../../views/addEmployee.html"));
 });
 
-
 router.get('/departments', (req, res) => {
     dataService.getDepartments()
     .then(data => res.json(data))
