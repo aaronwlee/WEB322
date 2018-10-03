@@ -7,15 +7,13 @@ const router = express.Router();
 var dataService = require('../data-service');
 
 var storage =  multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, '../public/images/uploaded');
-    },
+    destination: '../public/images/uploaded',
     filename: (req, file, cb) => {
         cb (null, Date.now() + path.extname(file.originalname));
     }
-})
-var upload = multer({ storage: storage });
+});
 
+var upload = multer({ storage: storage });
 
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + "../../views/home.html"));
@@ -58,7 +56,6 @@ router.get('/images/add', (req, res) => {
 });
 
 router.post('/images/add', upload.single('imageFile'), (req, res, next) => {
-    console.log(req.file);
     res.redirect('/images');   
 });
 
