@@ -33,13 +33,32 @@ router.get('/managers', (req, res) => {
  * Employee Routes
  */
 router.get('/employees', (req, res)  => {
+
+    
     dataService.getAllEmployees()
     .then(data => res.json(data))
     .catch(err => res.json({ message: err}))
+    
+    let status = req.query.status;
+    let department = req.query.department;
+    let manager = req.query.manager;
+
+    if (department > 0) {
+        dataService.getEmployeesByDepartment(department)
+        .then((data) => {
+            res.json(data);
+        })
+    }
 });
 
 router.get('/employees/add', (req, res) => {
     res.sendFile(path.join(__dirname + "../../views/addEmployee.html"));
+});
+
+router.post('/employees/add', (req, res) => {
+    let employeeToAdd = req.body;
+    dataService.addEmployee(employeeToAdd)
+        .then(() => res.redirect('/employees'));
 });
 
 router.get('/departments', (req, res) => {

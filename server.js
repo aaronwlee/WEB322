@@ -12,6 +12,7 @@
 
 var express = require("express");
 var path = require('path');
+var bodyParser = require('body-parser');
 var app = express();
 var HTTP_PORT = process.env.PORT || 8080;
 
@@ -21,6 +22,7 @@ var dataService = require('./data-service');
 
 // Configure the public folder
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.set('views', path.join(__dirname, '/views'));
 
 app.use('/', routes);
