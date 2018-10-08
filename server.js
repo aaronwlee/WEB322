@@ -14,7 +14,6 @@ var express = require("express");
 var path = require('path');
 var bodyParser = require('body-parser');
 var app = express();
-var HTTP_PORT = process.env.PORT || 8080;
 
 // Routes and data-service
 var routes = require('./routes/routes');
@@ -28,6 +27,6 @@ app.set('views', path.join(__dirname, '/views'));
 app.use('/', routes);
 
 dataService.initialize()
-    .then(() => app.listen(HTTP_PORT, () => console.log(`Listening on port ${HTTP_PORT}`)))
+    .then(() => app.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${HTTP_PORT}`)))
     .catch(err => res.json({ message: err}))
 
