@@ -64,7 +64,12 @@ exports.addEmployee = (employeeData) => {
 exports.getEmployeesByStatus = (status) => {
     return new Promise((resolve, reject) => {
         console.log(`getEmployeesByStatus: ${status}`);
-        let emp = employeesArr.filter(employee => employee.status == status);
+        let emp = employeesArr.filter(employee => {
+            if (status.localeCompare(employee.status) == 0)
+                return employee;
+        });
+        console.log(emp.length);
+
         if (emp.length > 0) resolve(emp);
         else reject('no results returned');
     });
