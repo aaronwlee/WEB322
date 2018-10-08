@@ -27,6 +27,6 @@ app.set('views', path.join(__dirname, '/views'));
 app.use('/', routes);
 
 dataService.initialize()
-    .then(() => app.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${HTTP_PORT}`)))
+    .then(() => app.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}`)))
     .catch(err => res.json({ message: err}))
 
