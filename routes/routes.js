@@ -34,15 +34,22 @@ router.get('/managers', (req, res) => {
  */
 router.get('/employees', (req, res)  => {
 
-    dataService.getAllEmployees()
-    .then(data => res.json(data))
-    .catch(err => res.json({ message: err}))
-    
-    if (req.query.status || req.query.department || req.query.manager) {
+    if (req.query.status)
         dataService.getEmployeesByStatus(req.query.status)
         .then(employees => res.json(employees))
         .catch(err => console.log(err));
-    }
+    else if (req.query.department)
+        dataService.getEmployeesByDepartment(req.query.department)
+        .then(employees => res.json(employees))
+        .catch(err => console.log(err));
+    else if (req.query.manager)
+        dataService.getEmployeesByManager(req.query.manager)
+        .then(employees => res.json(employees))
+        .catch(err => console.log(err));
+    else 
+        dataService.getAllEmployees()
+        .then(data => res.json(data))
+        .catch(err => res.json({ message: err}))
 });
 
 router.get('/employees/add', (req, res) => {

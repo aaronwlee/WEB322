@@ -68,8 +68,7 @@ exports.getEmployeesByStatus = (status) => {
             if (status.localeCompare(employee.status) == 0)
                 return employee;
         });
-        console.log(emp.length);
-
+    
         if (emp.length > 0) resolve(emp);
         else reject('no results returned');
     });
@@ -78,11 +77,11 @@ exports.getEmployeesByStatus = (status) => {
 exports.getEmployeesByDepartment = (department) => {
     return new Promise((resolve, reject) => {
         console.log(`getEmployeesByDepartment: ${department}`);
-        let emp = employeesArr.filter(employee => employee.department == department);
-        if (emp.length > 0) {
-            console.log(`Number of employees with department number ${department}: ${emp.length}`)
-            resolve(emp);
-        }
+        let emp = employeesArr.filter(employee => {
+            if (department.localeCompare(employee.department) == 0)
+                return employee;
+        });
+        if (emp.length > 0) resolve(emp);
         else reject('no results returned');
     })
 }
@@ -90,7 +89,12 @@ exports.getEmployeesByDepartment = (department) => {
 exports.getEmployeesByManager = (manager) => {
     return new Promise((resolve, reject) => {
         console.log(`getEmployeesByManager: ${manager}`);
-        let emp = employeesArr.filter(employee => employee.employeeManagerNum == manager);
+        
+        let emp = employeesArr.filter(employee => {
+            if (manager.localeCompare(employee.employeeManagerNum) == 0)
+                return employee;
+        });
+
         if (emp.length > 0) resolve(emp);
         else reject('no results returned');
     })
