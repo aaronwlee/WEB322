@@ -62,6 +62,12 @@ router.post('/employees/add', (req, res) => {
         .then(() => res.redirect('/employees'));
 });
 
+router.get('/employee/:value', (req, res) => {
+    dataService.getEmployeesByNum(req.params.value)
+    .then(employee => res.json(employee))
+    .catch(err => console.log(err));
+});
+
 router.get('/departments', (req, res) => {
     dataService.getDepartments()
     .then(data => res.json(data))
