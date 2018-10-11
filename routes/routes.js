@@ -94,7 +94,7 @@ router.get('/images', (req, res) => {
 });
 
 router.get('*', (req, res) => {
-    res.send(`The page does not exist`, 404);
+    res.status(`The page does not exist`).send(404);
 });
 
 module.exports = router;
