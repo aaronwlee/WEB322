@@ -30,6 +30,14 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('views', path.join(__dirname, '/views'));
 
+// Show correct active item
+app.use((req, res, next) => {
+    let route = req.baseUrl + req.path;
+    app.locals.activeRoute = (route == "/") ? "/" : route.replace(/\/$/, "");
+    console.log(`Route: ${app.locals.activeRoute}`);
+    next();
+});
+
 app.use('/', routes);
 
 dataService.initialize()
