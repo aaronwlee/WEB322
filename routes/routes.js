@@ -86,10 +86,13 @@ router.post('/images/add', upload.single('imageFile'), (req, res, next) => {
 });
 
 router.get('/images', (req, res) => {
-    fs.readdir('../public/images/uploaded', (err, files) => {
-        res.json({
-            images: files
-        });
+    fs.readdir('app/public/images/uploaded', (err, files) => {
+        if (err)
+            throw err;
+        else {
+            // console.log(files[0])
+            res.render('images', files);
+        }
     });
 });
 
