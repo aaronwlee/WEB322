@@ -13,12 +13,17 @@
 var express = require("express");
 var path = require('path');
 var bodyParser = require('body-parser');
+var exphbs  = require('express-handlebars');
 var PORT = process.env.PORT || 8080;
 var app = express();
 
 // Routes and data-service
 var routes = require('./routes/routes');
 var dataService = require('./data-service');
+
+// Configure view engine
+app.engine('.hbs', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'hbs');
 
 // Configure the public folder
 app.use(express.static('public'));
