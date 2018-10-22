@@ -22,7 +22,15 @@ var routes = require('./routes/routes');
 var dataService = require('./data-service');
 
 // Configure view engine
-app.engine('.hbs', exphbs({defaultLayout: 'main', extname: '.hbs'}));
+app.engine('.hbs', exphbs({
+    defaultLayout: 'main', 
+    extname: '.hbs',
+    helpers: {
+        navLink: function(url, options) {
+            return `<li` + ((url == app.locals.activeRoute) ? ' class="active" ' : '') + '><a href="' + url + '">' + options.fn(this) + '</a></li>'; 
+        }
+    }
+}));
 app.set('view engine', '.hbs');
 
 // Configure the public folder
