@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname + "../../views/about.html"));
+    res.render('about');
 });
 
 router.get('/managers', (req, res) => {
@@ -53,7 +53,7 @@ router.get('/employees', (req, res)  => {
 });
 
 router.get('/employees/add', (req, res) => {
-    res.sendFile(path.join(__dirname + "../../views/addEmployee.html"));
+    res.render('addEmployee');
 });
 
 router.post('/employees/add', (req, res) => {
@@ -78,7 +78,7 @@ router.get('/departments', (req, res) => {
  * Adding Images
  */
 router.get('/images/add', (req, res) => {
-    res.sendFile(path.join(__dirname + "../../views/addImage.html"));
+    res.render('addImage');
 });
 
 router.post('/images/add', upload.single('imageFile'), (req, res, next) => {
