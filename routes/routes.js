@@ -16,7 +16,7 @@ var storage =  multer.diskStorage({
 var upload = multer({ storage: storage });
 
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + "../../views/home.html"));
+    res.render('home');
 });
 
 router.get('/about', (req, res) => {
