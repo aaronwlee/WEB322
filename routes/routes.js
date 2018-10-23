@@ -7,7 +7,7 @@ const router = express.Router();
 var dataService = require('../data-service');
 
 var storage =  multer.diskStorage({
-    destination: 'app/public/images/uploaded',
+    destination: 'public/images/uploaded',
     filename: (req, file, cb) => {
         cb (null, Date.now() + path.extname(file.originalname));
     }
@@ -86,12 +86,12 @@ router.post('/images/add', upload.single('imageFile'), (req, res, next) => {
 });
 
 router.get('/images', (req, res) => {
-    fs.readdir('app/public/images/uploaded', (err, files) => {
+    fs.readdir('public/images/uploaded', (err, files) => {
         if (err)
             throw err;
         else {
             // console.log(files[0])
-            res.render('images', files);
+            res.render('images', { data: files });
         }
     });
 });
