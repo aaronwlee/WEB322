@@ -36,20 +36,20 @@ router.get('/employees', (req, res)  => {
 
     if (req.query.status)
         dataService.getEmployeesByStatus(req.query.status)
-        .then(employees => res.json(employees))
-        .catch(err => console.log(err));
+        .then(employees => res.render('employees', { data: employees }))
+        .catch(err => res.render({ message: err }));
     else if (req.query.department)
         dataService.getEmployeesByDepartment(req.query.department)
-        .then(employees => res.json(employees))
-        .catch(err => console.log(err));
+        .then(employees => res.render('employees', { data: employees }))
+        .catch(err => res.render({ message: err }));
     else if (req.query.manager)
         dataService.getEmployeesByManager(req.query.manager)
-        .then(employees => res.json(employees))
-        .catch(err => console.log(err));
+        .then(employees => res.render('employees', { data: employees }))
+        .catch(err => res.render({ message: err }));
     else 
         dataService.getAllEmployees()
-        .then(data => res.json(data))
-        .catch(err => res.json({ message: err}))
+        .then(data => res.render('employees', { data: data }))
+        .catch(err => res.render({ message: err}))
 });
 
 router.get('/employees/add', (req, res) => {
@@ -90,7 +90,6 @@ router.get('/images', (req, res) => {
         if (err)
             throw err;
         else {
-            // console.log(files[0])
             res.render('images', { data: files });
         }
     });
