@@ -64,8 +64,8 @@ router.post('/employees/add', (req, res) => {
 
 router.get('/employee/:value', (req, res) => {
     dataService.getEmployeesByNum(req.params.value)
-    .then(employee => res.json(employee))
-    .catch(err => console.log(err));
+    .then(data => res.render('employee', { employee: data }))
+    .catch(err => res.render({ message: err}))
 });
 
 router.get('/departments', (req, res) => {

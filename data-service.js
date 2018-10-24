@@ -104,7 +104,7 @@ exports.getEmployeesByNum = (num) => {
     return new Promise((resolve, reject) => {
         console.log(`getEmployeesByNum: ${num}`);
         let emp = employeesArr.filter(employee => employee.employeeNum == num);
-        if (emp.length > 0) resolve(emp);
+        if (emp.length > 0) resolve(emp[0]);
         else reject('no results returned');
     })
 }
