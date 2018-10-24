@@ -70,8 +70,8 @@ router.get('/employee/:value', (req, res) => {
 
 router.get('/departments', (req, res) => {
     dataService.getDepartments()
-    .then(data => res.json(data))
-    .catch(err => res.json({ message: err}))
+    .then(data => res.render('departments', { data: data }))
+    .catch(err => res.render({ message: err}))
 });
 
 /**
