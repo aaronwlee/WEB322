@@ -61,6 +61,14 @@ exports.addEmployee = (employeeData) => {
     });
 }
 
+exports.updateEmployee = (employeeData) => {
+    return new Promise((resolve, reject) => {
+        // Search through employees array for the matching employeeData.employeeNum
+        // When found, overwrite it with the new information passed through employeeData
+        // Invoke the resolve without any data
+    })
+}
+
 exports.getEmployeesByStatus = (status) => {
     return new Promise((resolve, reject) => {
         console.log(`getEmployeesByStatus: ${status}`);
