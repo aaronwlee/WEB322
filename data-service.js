@@ -11,11 +11,11 @@ var departmentsArr = [];
 // Read contents of the "./data/employees.json"
 let readFiles = new Promise((resolve, reject) => {
     fs.readFile(employee_file, (err, data) => {
-        if (err) reject('Unable to read file');
-        employeesArr = JSON.parse(data);
+        if (err) reject('Unable to read file')
+            employeesArr = JSON.parse(data);
         fs.readFile(department_file, (err, data) => {
-            if (err) reject('Unable to read file');
-            departmentsArr = JSON.parse(data);
+            if (err) reject('Unable to read file')
+                departmentsArr = JSON.parse(data);
             resolve('Read files succesfully!');
         });
     });
@@ -64,12 +64,8 @@ exports.addEmployee = (employeeData) => {
 exports.updateEmployee = (employeeData) => {
     return new Promise((resolve, reject) => {
         let emp = employeesArr.filter(employee => {
-            console.log(`employeeData NUM: ${employeeData.employeeNum}`)
-            // if (employeeData.employeeNum === employee.employeeNum) {
-            //     console.log(`MATCHED`)
-            //     console.log(employee)
-            //     // employee = employeeData;
-            // }
+            let data = JSON.parse(employeeData)
+            console.log(data.employeeNum)
         });
         if (emp.length > 0) resolve('Updated');
         else reject('no matches found');        

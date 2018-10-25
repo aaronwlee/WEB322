@@ -63,6 +63,10 @@ router.post('/employees/add', (req, res) => {
 });
 
 router.post('/employee/update', (req, res) => {
+    
+    // BUG: req.body doesn't contain the employeeNum
+    let employee = req.body;
+
     console.log(req.body);
     dataService.updateEmployee(req.body)
         .then(() => res.redirect('/employees'))
