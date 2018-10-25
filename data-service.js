@@ -63,9 +63,12 @@ exports.addEmployee = (employeeData) => {
 
 exports.updateEmployee = (employeeData) => {
     return new Promise((resolve, reject) => {
-        // Search through employees array for the matching employeeData.employeeNum
-        // When found, overwrite it with the new information passed through employeeData
-        // Invoke the resolve without any data
+        let emp = employeesArr.filter(employee => {
+            if (employeeData.employeeNum === employee.employeeNum)
+                employee = employeeData;
+        });
+        if (emp.length > 0) resolve('Updated');
+        else reject('no matches found');        
     })
 }
 
