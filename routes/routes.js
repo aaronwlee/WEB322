@@ -63,7 +63,6 @@ router.post('/employees/add', (req, res) => {
 });
 
 router.post('/employee/update', (req, res) => {
-    console.log(req.body);
     dataService.updateEmployee(req.body)
         .then(() => res.redirect('/employees'))
         .catch((err) => console.log(err))

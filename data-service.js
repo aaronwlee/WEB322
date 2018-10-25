@@ -63,12 +63,15 @@ exports.addEmployee = (employeeData) => {
 
 exports.updateEmployee = (employeeData) => {
     return new Promise((resolve, reject) => {
-        let emp = employeesArr.filter(employee => {
-            if (employee.SSN === employeeData.SSN)
-                employee = employeeData;
-        });
-        if (emp.length > 0) resolve('Updated');
-        else reject('no matches found');        
+        for (var i = 0; i < employeesArr.length; i++) {
+            if (employeesArr[i].SSN == employeeData.SSN)
+            {
+                employeeData.employeeNum = employeesArr[i].employeeNum;
+                employeesArr[i] = employeeData;
+                resolve(`Updated`);
+                break;   
+            }
+        }
     })
 }
 
