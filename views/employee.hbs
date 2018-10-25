@@ -29,7 +29,8 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="SSN">Social Security Num:</label>
-                            <input name="SSN" class="form-control" id="SSN" type="text" value="{{employee.SSN}}" readonly>
+                            <input name="SSN" class="form-control" id="SSN" type="text" value="{{employee.SSN}}"
+                                readonly>
                         </div>
                     </div>
                 </div>
@@ -65,35 +66,36 @@
                         <div class="form-group">
                             <label for="isManager">Manager:</label>
                             {{#if employee.isManager}}
-                                <input name="isManager" class="form-control" type="checkbox" checked>
+                            <input name="isManager" class="form-control" type="checkbox" checked>
                             {{else}}
-                                <input name="isManager" class="form-control" type="checkbox">
+                            <input name="isManager" class="form-control" type="checkbox">
                             {{/if}}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="employeeManagerNum">Employee's Manager Number:</label>
-                            <input name="employeeManagerNum" class="form-control" id="employeeManagerNum" type="text" value="{{employee.employeeManagerNum}}">
+                            <input name="employeeManagerNum" class="form-control" id="employeeManagerNum" type="text"
+                                value="{{employee.employeeManagerNum}}">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Status:</label><br>
                             {{#equal employee.status 'Full Time'}}
-                                <label class="checkbox-inline">
-                                    <input name="status" id="statusFT" type="radio" value="Full Time" checked> Full Time
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input name="status" id="statusFT" type="radio" value="Part Time"> Part Time
-                                </label>
+                            <label class="checkbox-inline">
+                                <input name="status" id="statusFT" type="radio" value="Full Time" checked> Full Time
+                            </label>
+                            <label class="checkbox-inline">
+                                <input name="status" id="statusFT" type="radio" value="Part Time"> Part Time
+                            </label>
                             {{else}}
-                                <label class="checkbox-inline">
-                                    <input name="status" id="statusFT" type="radio" value="Full Time"> Full Time
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input name="status" id="statusFT" type="radio" value="Part Time" checked> Part Time
-                                </label>
+                            <label class="checkbox-inline">
+                                <input name="status" id="statusFT" type="radio" value="Full Time"> Full Time
+                            </label>
+                            <label class="checkbox-inline">
+                                <input name="status" id="statusFT" type="radio" value="Part Time" checked> Part Time
+                            </label>
                             {{/equal}}
                         </div>
                     </div>
@@ -101,13 +103,69 @@
                         <div class="form-group">
                             <label for="department">Department</label>
                             <select name="department" class="form-control" id="department">
-                                <option value="1">Creative Services</option>
-                                <option value="2">Product Development</option>
-                                <option value="3">Marketing</option>
-                                <option value="4">Strategic Planning</option>
-                                <option value="5">Accounting</option>
-                                <option value="6">Human Resources</option>
-                                <option value="7">Quality Analysis</option>
+                                {{#equal employee.department '1'}}
+                                    <option value="1" selected>Creative Services</option>
+                                    <option value="2">Product Development</option>
+                                    <option value="3">Marketing</option>
+                                    <option value="4">Strategic Planning</option>
+                                    <option value="5">Accounting</option>
+                                    <option value="6">Human Resources</option>
+                                    <option value="7">Quality Analysis</option>
+                                {{/equal}}
+                                {{#equal employee.department '2'}}
+                                    <option value="1">Creative Services</option>
+                                    <option value="2" selected>Product Development</option>
+                                    <option value="3">Marketing</option>
+                                    <option value="4">Strategic Planning</option>
+                                    <option value="5">Accounting</option>
+                                    <option value="6">Human Resources</option>
+                                    <option value="7">Quality Analysis</option>
+                                {{/equal}}
+                                {{#equal employee.department '3'}}
+                                    <option value="1">Creative Services</option>
+                                    <option value="2">Product Development</option>
+                                    <option value="3" selected>Marketing</option>
+                                    <option value="4">Strategic Planning</option>
+                                    <option value="5">Accounting</option>
+                                    <option value="6">Human Resources</option>
+                                    <option value="7">Quality Analysis</option>
+                                {{/equal}}
+                                {{#equal employee.department '4'}}
+                                    <option value="1">Creative Services</option>
+                                    <option value="2">Product Development</option>
+                                    <option value="3">Marketing</option>
+                                    <option value="4" selected>Strategic Planning</option>
+                                    <option value="5">Accounting</option>
+                                    <option value="6">Human Resources</option>
+                                    <option value="7">Quality Analysis</option>
+                                {{/equal}}
+                                {{#equal employee.department '5'}}
+                                    <option value="1">Creative Services</option>
+                                    <option value="2">Product Development</option>
+                                    <option value="3">Marketing</option>
+                                    <option value="4">Strategic Planning</option>
+                                    <option value="5" selected>Accounting</option>
+                                    <option value="6">Human Resources</option>
+                                    <option value="7">Quality Analysis</option>
+                                {{/equal}}
+                                {{#equal employee.department '6'}}
+                                    <option value="1">Creative Services</option>
+                                    <option value="2">Product Development</option>
+                                    <option value="3">Marketing</option>
+                                    <option value="4">Strategic Planning</option>
+                                    <option value="5">Accounting</option>
+                                    <option value="6" selected>Human Resources</option>
+                                    <option value="7">Quality Analysis</option>
+                                {{/equal}}
+                                {{#equal employee.department '7'}}
+                                    <option value="1">Creative Services</option>
+                                    <option value="2">Product Development</option>
+                                    <option value="3">Marketing</option>
+                                    <option value="4">Strategic Planning</option>
+                                    <option value="5">Accounting</option>
+                                    <option value="6">Human Resources</option>
+                                    <option value="7" selected>Quality Analysis</option>
+                                {{/equal}}
                             </select>
                         </div>
                     </div>
@@ -116,7 +174,8 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="hireDate">Hire Date</label>
-                            <input name="hireDate" class="form-control" id="hireDate" type="text" value="{{employee.hireDate}}" readonly>
+                            <input name="hireDate" class="form-control" id="hireDate" type="text" value="{{employee.hireDate}}"
+                                readonly>
                         </div>
                     </div>
                 </div>
