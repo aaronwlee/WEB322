@@ -1,14 +1,14 @@
 /*********************************************************************************
-* WEB322: Assignment 03
-* I declare that this assignment is my own work in accordance with Seneca Academic Policy.
-* No part of this assignment has been copied manually or electronically from any other source
-* (including web sites) or distributed to other students.
+* WEB322 – Assignment 04
+* I declare that this assignment is my own work in accordance with Seneca Academic Policy. No part
+* of this assignment has been copied manually or electronically from any other source
+* (including 3rd party web sites) or distributed to other students.
 *
-* Name: Lean Junio Student ID: 019-1091523 Date: October 08, 2018
+* Name: Lean Junio Student ID: 019-109-123 Date: Thursday, October 25, 2018
 *
-* Online (Heroku) URL: https://shrouded-chamber-12340.herokuapp.com/
+* Online (Heroku) Link: https://arcane-shelf-64645.herokuapp.com/
 *
-********************************************************************************/
+********************************************************************************/ 
 
 var express = require("express");
 var path = require('path');
