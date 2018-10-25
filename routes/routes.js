@@ -62,6 +62,11 @@ router.post('/employees/add', (req, res) => {
         .then(() => res.redirect('/employees'));
 });
 
+router.post('/employee/update', (req, res) => {
+    console.log(req.body);
+    res.redirect('/employees');
+})
+
 router.get('/employee/:value', (req, res) => {
     dataService.getEmployeesByNum(req.params.value)
     .then(data => res.render('employee', { employee: data }))
