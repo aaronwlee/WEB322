@@ -64,8 +64,12 @@ exports.addEmployee = (employeeData) => {
 exports.updateEmployee = (employeeData) => {
     return new Promise((resolve, reject) => {
         let emp = employeesArr.filter(employee => {
-            if (employeeData.employeeNum === employee.employeeNum)
-                employee = employeeData;
+            console.log(`employeeData NUM: ${employeeData.employeeNum}`)
+            // if (employeeData.employeeNum === employee.employeeNum) {
+            //     console.log(`MATCHED`)
+            //     console.log(employee)
+            //     // employee = employeeData;
+            // }
         });
         if (emp.length > 0) resolve('Updated');
         else reject('no matches found');        

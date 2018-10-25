@@ -64,8 +64,10 @@ router.post('/employees/add', (req, res) => {
 
 router.post('/employee/update', (req, res) => {
     console.log(req.body);
-    res.redirect('/employees');
-})
+    dataService.updateEmployee(req.body)
+        .then(() => res.redirect('/employees'))
+        .catch((err) => console.log(err))
+});
 
 router.get('/employee/:value', (req, res) => {
     dataService.getEmployeesByNum(req.params.value)
