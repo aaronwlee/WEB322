@@ -17,6 +17,9 @@ var exphbs  = require('express-handlebars');
 var PORT = process.env.PORT || 8080;
 var app = express();
 
+// .env file
+require('dotenv').config();
+
 // Routes and data-service
 var routes = require('./routes/routes');
 var dataService = require('./data-service');
