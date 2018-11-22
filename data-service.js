@@ -60,8 +60,8 @@ let sqlPromise = new Promise((resolve, reject) => {
 let getAllEmployees = () => {
   return Employee.findAll()
     .then(data => resolve(data))
-    .catch(err => reject(err))
-}
+    .catch(err => reject(err));
+};
 let getDepartments = () => {
   return Department.findAll()
     .then(data => resolve(data))
@@ -72,7 +72,7 @@ let getManagers = () => {
     isManager: true
   })
     .then(data => resolve(data))
-    .catch(err => reject(`no results returned: ${err}`));
+    .catch(err => reject(`no results returned:`));
 };
 
 // generic promise function
@@ -83,13 +83,23 @@ let getEmployeesByOption = option => {
     }
   })
     .then(data => resolve(data))
-    .catch(err => reject(`no results returned ${err}`));
+    .catch(err => reject(`no results returned`));
 };
+
+let getDepartmentByOption = option => {
+  return Department.findAll({
+    where: {
+      [option]: option
+    }
+  })
+    .then(data => resolve(data[0]))
+    .catch(err => reject(`no results returned`));
+}
 
 let addEmployee = employeeData => {
   employeeData.isManager = employeeData.isManager ? true : false;
   for (let i in employeeData) {
-    if (employeeData[i] == '') {
+    if (employeeData[i] == "") {
       employeeData[i] = null;
     }
   }
@@ -105,7 +115,7 @@ let addEmployee = employeeData => {
 let updateEmployee = employeeData => {
   employeeData.isManager = employeeData.isManager ? true : false;
   for (let i in employeeData) {
-    if (employeeData[i] == '') {
+    if (employeeData[i] == "") {
       employeeData[i] = null;
     }
   }
@@ -115,19 +125,37 @@ let updateEmployee = employeeData => {
     }
   })
     .then(data => resolve(`update success: ${data}`))
-    .catch(err => resolve(`update failed: ${err}`))
-}
+    .catch(err => resolve(`update failed: ${err}`));
+};
+
+let updateDepartment = departmentData => {
+  for (let i in departmentData) {
+    if (departmentData[i] == "") {
+      departmentData[i] = null;
+    }
+  }
+  return Department.update(
+    {
+      departmentName: departmentData.departmentName
+    },
+    { 
+      where: { departmentId: departmentData.departmentId } 
+    }
+  )
+    .then(data => resolve(`Update succes: ${data}`))
+    .catch(err => resolve(`Update failed: ${err}`))
+};
 
 let addDepartment = departmentData => {
   for (let i in departmentData) {
-    if (departmentData[i] == '') {
+    if (departmentData[i] == "") {
       departmentData[i] = null;
     }
   }
   return Department.create(departmentData)
     .then(department => resolve(`Creation success: ${department}`))
-    .catch(err => reject(`Unable to create department`))
-}
+    .catch(err => reject(`Unable to create department`));
+};
 
 exports.initialize = () => {
   return sqlPromise;
@@ -139,7 +167,7 @@ exports.getDepartments = () => {
   return getDepartments();
 };
 exports.getManagers = () => {
-  return getManagers;
+  return getManagers();
 };
 exports.getEmployeesByStatus = status => {
   return getEmployeesByOption(status);
@@ -162,3 +190,9 @@ exports.updateEmployee = employeeData => {
 exports.addDepartment = departmentData => {
   return addDepartment(departmentData);
 };
+exports.updateDepartment = departmentData => {
+  return updateDepartment(departmentData);
+}
+exports.getDepartmentById = departmentId => {
+  return getDepartmentByOption(departmentId);
+}
