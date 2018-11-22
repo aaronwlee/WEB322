@@ -1,167 +1,150 @@
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
+const fs = require("fs");
+var exports = (module.exports = {});
 
-const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+const sequelize = new Sequelize(
+  process.env.DB_DATABASE,
+  process.env.DB_USERNAME,
+  process.env.DB_PASSWORD,
+  {
     host: process.env.DB_HOST,
-    dialect: 'postgres',
+    dialect: "postgres",
     port: process.env.DB_PORT,
     dialectOptions: {
-        ssl: true
+      ssl: true
     }
+  }
+);
+
+const Employee = sequelize.define("employee", {
+  employeeNum: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  firstName: Sequelize.STRING,
+  lastName: Sequelize.STRING,
+  email: Sequelize.STRING,
+  SSN: Sequelize.STRING,
+  addressStreet: Sequelize.STRING,
+  addressCity: Sequelize.STRING,
+  addressState: Sequelize.STRING,
+  addressPostal: Sequelize.STRING,
+  maritalStatus: Sequelize.STRING,
+  isManager: Sequelize.BOOLEAN,
+  employeeManagerNum: Sequelize.INTEGER,
+  status: Sequelize.STRING,
+  hireDate: Sequelize.STRING
 });
 
-const Employee = sequelize.define('employee', {
-    employeeNum: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    firstName: Sequelize.STRING,
-    lastName: Sequelize.STRING,
-    email: Sequelize.STRING,
-    SSN: Sequelize.STRING,
-    addressStreet: Sequelize.STRING,
-    addressCity: Sequelize.STRING,
-    addressState: Sequelize.STRING,
-    addressPostal: Sequelize.STRING,
-    maritalStatus: Sequelize.STRING,
-    isManager: Sequelize.BOOLEAN,
-    employeeManagerNum: Sequelize.INTEGER,
-    status: Sequelize.STRING,
-    hireDate: Sequelize.STRING
+const Department = sequelize.define("department", {
+  departmentId: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  departmentName: Sequelize.STRING
 });
 
-const Department = sequelize.define('department', {
-    departmentId: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    departmentName: Sequelize.STRING
+Department.hasMany(Employee, { foreignKey: "department" });
+
+// Promises
+let sqlPromise = new Promise((resolve, reject) => {
+  sequelize
+    .sync()
+    .then(Employee => resolve("Employee model synced"))
+    .then(Department => resolve("Department model synced"))
+    .catch(err => reject(`Unable to sync database: ${err}`));
 });
 
-Department.hasMany(Employee, { foreignKey: 'department' });
+let getAllEmployees = () => {
+  return Employee.findAll()
+    .then(data => resolve(data))
+    .catch(err => reject(err))
+}
+let getDepartments = () => {
+  return Department.findAll()
+    .then(data => resolve(data))
+    .catch(err => reject(err));
+};
+let getManagers = () => {
+  return Employee.findAll({
+    isManager: true
+  })
+    .then(data => resolve(data))
+    .catch(err => reject(`no results returned: ${err}`));
+};
 
-const fs = require('fs');
-var exports = module.exports = {};
+// generic promise function
+let getEmployeesByOption = option => {
+  return Employee.findAll({
+    where: {
+      [option]: option
+    }
+  })
+    .then(data => resolve(data))
+    .catch(err => reject(`no results returned ${err}`));
+};
 
-// Files
-let employee_file = 'data/employees.json';
-let department_file = 'data/departments.json';
+let addEmployee = employeeData => {
+  employeeData.isManager = employeeData.isManager ? true : false;
+  for (let i in employeeData) {
+    if (employeeData[i] == '') {
+      employeeData[i] = null;
+    }
+  }
+  return Employee.create(employeeData, {
+    where: {
+      employeeNum: employeeData.employeeNum
+    }
+  })
+    .then(employee => resolve(`creation success: ${employee}`))
+    .catch(err => reject(`unable to create employee: ${err}`));
+};
 
-var employeesArr = [];
-var departmentsArr = [];
-
-// Read contents of the "./data/employees.json"
-let readFiles = new Promise((resolve, reject) => {
-    fs.readFile(employee_file, (err, data) => {
-        if (err) reject('Unable to read file')
-            employeesArr = JSON.parse(data);
-        fs.readFile(department_file, (err, data) => {
-            if (err) reject('Unable to read file')
-                departmentsArr = JSON.parse(data);
-            resolve('Read files succesfully!');
-        });
-    });
-});
+let updateEmployee = employeeData => {
+  employeeData.isManager = employeeData.isManager ? true : false;
+  for (let i in employeeData) {
+    if (employeeData[i] == '') {
+      employeeData[i] = null;
+    }
+  }
+  return Employee.update(employeeData, {
+    where: {
+      employeeNum: employeeData.employeeNum
+    }
+  })
+    .then(data => resolve(`update success: ${data}`))
+    .catch(err => resolve(`update failed: ${err}`))
+}
 
 exports.initialize = () => {
-    return readFiles;
-}
-
+  return sqlPromise;
+};
 exports.getAllEmployees = () => {
-    return new Promise((resolve, reject) => {
-        if (employeesArr.length == 0) reject('No results returned');
-        resolve(employeesArr);
-    });
-}
-
-exports.getManagers = () => {
-    return new Promise((resolve, reject) => {
-        let managers = employeesArr.filter(employee => employee.isManager == true);
-        if (managers == 0) reject('No results returned')
-        resolve(managers);
-    });
-}
-
+  return getAllEmployees();
+};
 exports.getDepartments = () => {
-    return new Promise((resolve, reject) => {
-        if (departmentsArr.length == 0) reject('No results returned');
-        resolve(departmentsArr);
-    });
-}
-
-exports.addEmployee = (employeeData) => {
-    return new Promise((resolve, reject) => {
-        if (!employeeData.isManager)
-            employeeData.isManager = false;
-        else
-            employeeData.isManager = true;
-
-        employeeData.employeeNum = employeesArr.length + 1;
-        employeesArr.push(employeeData);
-
-        resolve('Added new employee');
-    });
-}
-
-exports.updateEmployee = (employeeData) => {
-    return new Promise((resolve, reject) => {
-        for (var i = 0; i < employeesArr.length; i++) {
-            if (employeesArr[i].SSN == employeeData.SSN)
-            {
-                employeeData.employeeNum = employeesArr[i].employeeNum;
-                employeesArr[i] = employeeData;
-                resolve(`Updated`);
-                break;   
-            }
-        }
-    })
-}
-
-exports.getEmployeesByStatus = (status) => {
-    return new Promise((resolve, reject) => {
-        console.log(`getEmployeesByStatus: ${status}`);
-        let emp = employeesArr.filter(employee => {
-            if (status.localeCompare(employee.status) == 0)
-                return employee;
-        });
-    
-        if (emp.length > 0) resolve(emp);
-        else reject('no results returned');
-    });
-}
-
-exports.getEmployeesByDepartment = (department) => {
-    return new Promise((resolve, reject) => {
-        console.log(`getEmployeesByDepartment: ${department}`);
-        let emp = employeesArr.filter(employee => {
-            if (department.localeCompare(employee.department) == 0)
-                return employee;
-        });
-        if (emp.length > 0) resolve(emp);
-        else reject('no results returned');
-    })
-}
-
-exports.getEmployeesByManager = (manager) => {
-    return new Promise((resolve, reject) => {
-        console.log(`getEmployeesByManager: ${manager}`);
-        
-        let emp = employeesArr.filter(employee => {
-            if (manager.localeCompare(employee.employeeManagerNum) == 0)
-                return employee;
-        });
-
-        if (emp.length > 0) resolve(emp);
-        else reject('no results returned');
-    })
-}
-
-exports.getEmployeesByNum = (num) => {
-    return new Promise((resolve, reject) => {
-        console.log(`getEmployeesByNum: ${num}`);
-        let emp = employeesArr.filter(employee => employee.employeeNum == num);
-        if (emp.length > 0) resolve(emp[0]);
-        else reject('no results returned');
-    })
-}
+  return getDepartments();
+};
+exports.getManagers = () => {
+  return getManagers;
+};
+exports.getEmployeesByStatus = status => {
+  return getEmployeesByOption(status);
+};
+exports.getEmployeesByDepartment = department => {
+  return getEmployeesByOption(department);
+};
+exports.getEmployeesByManager = employeeManagerNum => {
+  return getEmployeesByOption(employeeManagerNum);
+};
+exports.getEmployeesByNum = employeeNum => {
+  return getEmployeesByOption(employeeNum);
+};
+exports.addEmployee = employeeData => {
+  return addEmployee(employeeData);
+};
+exports.updateEmployee = employeeData => {
+  return updateEmployee(employeeData);
+};
