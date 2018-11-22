@@ -118,6 +118,17 @@ let updateEmployee = employeeData => {
     .catch(err => resolve(`update failed: ${err}`))
 }
 
+let addDepartment = departmentData => {
+  for (let i in departmentData) {
+    if (departmentData[i] == '') {
+      departmentData[i] = null;
+    }
+  }
+  return Department.create(departmentData)
+    .then(department => resolve(`Creation success: ${department}`))
+    .catch(err => reject(`Unable to create department`))
+}
+
 exports.initialize = () => {
   return sqlPromise;
 };
@@ -147,4 +158,7 @@ exports.addEmployee = employeeData => {
 };
 exports.updateEmployee = employeeData => {
   return updateEmployee(employeeData);
+};
+exports.addDepartment = departmentData => {
+  return addDepartment(departmentData);
 };
