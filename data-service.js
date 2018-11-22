@@ -2,6 +2,11 @@ const Sequelize = require("sequelize");
 const fs = require("fs");
 var exports = (module.exports = {});
 
+/**
+ * Sequelize Model setup
+ * - Employee
+ * - Department
+ */
 const sequelize = new Sequelize(
   process.env.DB_DATABASE,
   process.env.DB_USERNAME,
@@ -48,7 +53,7 @@ const Department = sequelize.define("department", {
 
 Department.hasMany(Employee, { foreignKey: "department" });
 
-// Promises
+// Promise for initialize
 let sqlPromise = new Promise((resolve, reject) => {
   sequelize
     .sync()
@@ -57,25 +62,14 @@ let sqlPromise = new Promise((resolve, reject) => {
     .catch(err => reject(`Unable to sync database: ${err}`));
 });
 
+/**
+ * Employee Promise methods
+ */
 let getAllEmployees = () => {
   return Employee.findAll()
     .then(data => resolve(data))
     .catch(err => reject(err));
 };
-let getDepartments = () => {
-  return Department.findAll()
-    .then(data => resolve(data))
-    .catch(err => reject(err));
-};
-let getManagers = () => {
-  return Employee.findAll({
-    isManager: true
-  })
-    .then(data => resolve(data))
-    .catch(err => reject(`no results returned:`));
-};
-
-// generic promise function
 let getEmployeesByOption = option => {
   return Employee.findAll({
     where: {
@@ -85,22 +79,6 @@ let getEmployeesByOption = option => {
     .then(data => resolve(data))
     .catch(err => reject(`no results returned`));
 };
-
-let getDepartmentByOption = option => {
-  return Department.findAll({
-    where: {
-      [option]: option
-    }
-  })
-    .then(data => resolve(data[0]))
-    .catch(err => reject(`no results returned`));
-}
-
-let deleteDepartmentById = departmentId => {
-  return Department.destroy({ where: { departmentId: departmentId }})
-    .then(data => resolve('Deleted'))
-    .catch(err => reject(err));
-}
 
 let addEmployee = employeeData => {
   employeeData.isManager = employeeData.isManager ? true : false;
@@ -134,6 +112,40 @@ let updateEmployee = employeeData => {
     .catch(err => resolve(`update failed: ${err}`));
 };
 
+let getManagers = () => {
+  return Employee.findAll({
+    isManager: true
+  })
+    .then(data => resolve(data))
+    .catch(err => reject(`no results returned:`));
+};
+
+/**
+ * Department Methods
+ */
+
+let getDepartments = () => {
+  return Department.findAll()
+    .then(data => resolve(data))
+    .catch(err => reject(err));
+};
+
+let getDepartmentByOption = option => {
+  return Department.findAll({
+    where: {
+      [option]: option
+    }
+  })
+    .then(data => resolve(data[0]))
+    .catch(err => reject(`no results returned`));
+};
+
+let deleteDepartmentById = departmentId => {
+  return Department.destroy({ where: { departmentId: departmentId } })
+    .then(data => resolve("Deleted"))
+    .catch(err => reject(err));
+};
+
 let updateDepartment = departmentData => {
   for (let i in departmentData) {
     if (departmentData[i] == "") {
@@ -144,12 +156,12 @@ let updateDepartment = departmentData => {
     {
       departmentName: departmentData.departmentName
     },
-    { 
-      where: { departmentId: departmentData.departmentId } 
+    {
+      where: { departmentId: departmentData.departmentId }
     }
   )
     .then(data => resolve(`Update succes: ${data}`))
-    .catch(err => resolve(`Update failed: ${err}`))
+    .catch(err => resolve(`Update failed: ${err}`));
 };
 
 let addDepartment = departmentData => {
@@ -163,6 +175,9 @@ let addDepartment = departmentData => {
     .catch(err => reject(`Unable to create department`));
 };
 
+/**
+ * Functions that are responsible for calling their respective promises
+ */
 exports.initialize = () => {
   return sqlPromise;
 };
@@ -198,10 +213,10 @@ exports.addDepartment = departmentData => {
 };
 exports.updateDepartment = departmentData => {
   return updateDepartment(departmentData);
-}
+};
 exports.getDepartmentById = departmentId => {
   return getDepartmentByOption(departmentId);
-}
+};
 exports.deleteDepartmentById = departmentId => {
   return deleteDepartmentById(departmentId);
-}
+};
