@@ -96,6 +96,12 @@ let getDepartmentByOption = option => {
     .catch(err => reject(`no results returned`));
 }
 
+let deleteDepartmentById = departmentId => {
+  return Department.destroy({ where: { departmentId: departmentId }})
+    .then(data => resolve('Deleted'))
+    .catch(err => reject(err));
+}
+
 let addEmployee = employeeData => {
   employeeData.isManager = employeeData.isManager ? true : false;
   for (let i in employeeData) {
@@ -195,4 +201,7 @@ exports.updateDepartment = departmentData => {
 }
 exports.getDepartmentById = departmentId => {
   return getDepartmentByOption(departmentId);
+}
+exports.deleteDepartmentById = departmentId => {
+  return deleteDepartmentById(departmentId);
 }
