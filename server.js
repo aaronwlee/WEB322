@@ -4,9 +4,9 @@
 * of this assignment has been copied manually or electronically from any other source
 * (including 3rd party web sites) or distributed to other students.
 *
-* Name: Lean Junio Student ID: 019-109-123 Date: Thursday, October 25, 2018
+* Name: Lean Junio Student ID: 019-109-123 Date: Friday, November 23, 2018
 *
-* Online (Heroku) Link: https://arcane-shelf-64645.herokuapp.com/
+* Online (Heroku) Link: https://ljjunioweb322a5.herokuapp.com/departments
 *
 ********************************************************************************/ 
 
