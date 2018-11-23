@@ -73,7 +73,8 @@ router.post("/employee/update", (req, res) => {
     .updateEmployee(req.body)
     .then(() => res.redirect("/employees"))
     .catch(err => console.log(err));
-});
+});2
+
 
 router.get("/employee/:value", (req, res) => {
   dataService
@@ -82,6 +83,9 @@ router.get("/employee/:value", (req, res) => {
     .catch(err => res.render({ message: err }));
 });
 
+/**
+ * Departments
+ */
 router.get("/departments", (req, res) => {
   dataService
     .getDepartments()
@@ -93,12 +97,35 @@ router.get("/departments", (req, res) => {
     .catch(err => res.render('departments', { message: "no results" }));
 });
 
+router.get('/departments/add', (req, res) => {
+  res.render('addDepartment');
+});
+
+router.post('/departments/add', (req, res) => {
+  dataService.addDepartment(req.params)
+    .then(data => res.redirect('/departments'))
+});
+
+router.post('/department/update', (req, res) => {
+  dataService.updateDepartment(req.params)
+  .then(data => res.redirect('/departments'))
+});
+
+router.get("/department/:id", (req, res) => {
+  dataService.updateDepartment(req.params.id)
+    .then(data => res.render('department', { department: data }))
+    .catch(err => res.status(400).send('Department not found'));
+}); 
+
+router.get('/departments/delete/:departmentId', (req, res) => {
+  dataService.deleteDepartmentById(req.params.id)
+    .then(data => res.redirect('/departments'))
+    .catch(err => res.status(500).send('Unable to Remove Department / Department not found'))
+})
+
 /**
  * Adding Images
  */
-router.get("/images/add", (req, res) => {
-  res.render("addImage");
-});
 
 router.post("/images/add", upload.single("imageFile"), (req, res, next) => {
   res.redirect("/images");
