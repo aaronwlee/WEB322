@@ -1,5 +1,4 @@
 const Sequelize = require("sequelize");
-const fs = require("fs");
 var exports = (module.exports = {});
 
 /**
@@ -10,8 +9,7 @@ var exports = (module.exports = {});
 const sequelize = new Sequelize(
   process.env.DB_DATABASE,
   process.env.DB_USERNAME,
-  process.env.DB_PASSWORD,
-  {
+  process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
     dialect: "postgres",
     port: process.env.DB_PORT,
@@ -53,7 +51,6 @@ const Department = sequelize.define("department", {
 
 Department.hasMany(Employee, { foreignKey: "department" });
 
-// Promise for initialize
 let sqlPromise = new Promise((resolve, reject) => {
   sequelize
     .sync()
@@ -65,59 +62,82 @@ let sqlPromise = new Promise((resolve, reject) => {
 /**
  * Employee Promise methods
  */
+
 let getAllEmployees = () => {
-  return Employee.findAll()
-    .then(data => resolve(data))
+  return new Promise((resolve, reject) => {
+    Employee.findAll()
+    .then(data => resolve(data)) 
     .catch(err => reject(err));
-};
-let getEmployeesByOption = option => {
-  return Employee.findAll({
-    where: {
-      [option]: option
-    }
   })
-    .then(data => resolve(data))
-    .catch(err => reject(`no results returned`));
+};
+
+let getEmployeesByOption = option => {
+  return new Promise((resolve, reject) => {
+    Employee.findAll({
+      where: {
+        [option]: option
+      }
+    })
+      .then(data => resolve(data))
+      .catch(err => reject(err));
+  });
 };
 
 let addEmployee = employeeData => {
-  employeeData.isManager = employeeData.isManager ? true : false;
-  for (let i in employeeData) {
-    if (employeeData[i] == "") {
-      employeeData[i] = null;
+  return new Promise((resolve, reject) => {
+    employeeData.isManager = employeeData.isManager ? true : false;
+    for (let i in employeeData) {
+      if (employeeData[i] == "") {
+        employeeData[i] = null;
+      }
     }
-  }
-  return Employee.create(employeeData, {
-    where: {
-      employeeNum: employeeData.employeeNum
-    }
-  })
-    .then(employee => resolve(`creation success: ${employee}`))
-    .catch(err => reject(`unable to create employee: ${err}`));
-};
+    Employee.create(employeeData, {
+      where: {
+        employeeNum: employeeData.employeeNum
+      }
+    })
+      .then(employee => {
+        console.log(employee.firstName)
+        resolve(`creation success: ${employee}`)
+      })
+      .catch(err => reject(err));
+  });
+}
 
 let updateEmployee = employeeData => {
-  employeeData.isManager = employeeData.isManager ? true : false;
-  for (let i in employeeData) {
-    if (employeeData[i] == "") {
-      employeeData[i] = null;
+  return new Promise((resolve, reject) => {
+    employeeData.isManager = employeeData.isManager ? true : false;
+    for (let i in employeeData) {
+      if (employeeData[i] == "") {
+        employeeData[i] = null;
+      }
     }
-  }
-  return Employee.update(employeeData, {
-    where: {
-      employeeNum: employeeData.employeeNum
-    }
+    Employee.update(employeeData, {
+      where: {
+        employeeNum: employeeData.employeeNum
+      }
+    })
+      .then(data => resolve(`update success: ${data}`))
+      .catch(err => resolve(`update failed: ${err}`));
   })
-    .then(data => resolve(`update success: ${data}`))
-    .catch(err => resolve(`update failed: ${err}`));
+};
+
+let deleteEmployeeByNum = employeeNum => {
+  return new Promise((resolve, reject) => {
+    Employee.destroy({ where: { employeeNum: employeeNum } })
+      .then(data => resolve("Deleted"))
+      .catch(err => reject(err));
+  });
 };
 
 let getManagers = () => {
-  return Employee.findAll({
-    isManager: true
-  })
-    .then(data => resolve(data))
-    .catch(err => reject(`no results returned:`));
+  return new Promise((resolve, reject) => {
+    Employee.findAll({
+      isManager: true
+    })
+      .then(data => resolve(data))
+      .catch(err => reject(`no results returned:`));
+  });
 };
 
 /**
@@ -125,25 +145,33 @@ let getManagers = () => {
  */
 
 let getDepartments = () => {
-  return Department.findAll()
-    .then(data => resolve(data))
-    .catch(err => reject(err));
+  return new Promise((resolve, reject) => {
+    Department.findAll()
+      .then(data => {
+        resolve(data);
+      })
+      .catch(err => reject(err));
+  });
 };
 
 let getDepartmentByOption = option => {
-  return Department.findAll({
-    where: {
-      [option]: option
-    }
-  })
-    .then(data => resolve(data[0]))
-    .catch(err => reject(`no results returned`));
+  return new Promise((resolve, reject) => {
+    Department.findAll({
+      where: {
+        [option]: option
+      }
+    })
+      .then(data => resolve(data[0]))
+      .catch(err => reject(`no results returned`));
+  });
 };
 
 let deleteDepartmentById = departmentId => {
-  return Department.destroy({ where: { departmentId: departmentId } })
-    .then(data => resolve("Deleted"))
+  return new Promise((resolve, reject) => { 
+    Department.destroy({ where: { departmentId: departmentId } })
+    .then(data => resolve('Deleted'))
     .catch(err => reject(err));
+  });
 };
 
 let updateDepartment = departmentData => {
@@ -152,27 +180,30 @@ let updateDepartment = departmentData => {
       departmentData[i] = null;
     }
   }
-  return Department.update(
-    {
-      departmentName: departmentData.departmentName
-    },
-    {
-      where: { departmentId: departmentData.departmentId }
-    }
-  )
-    .then(data => resolve(`Update succes: ${data}`))
-    .catch(err => resolve(`Update failed: ${err}`));
+  return new Promise((resolve, reject) => {
+    Department.update({ departmentName: departmentData.departmentName },{ where: { departmentId: departmentData.departmentId }})
+      .then(data => resolve(`Update succes: ${data}`))
+      .catch(err => resolve(`Update failed: ${err}`));
+  });
 };
 
 let addDepartment = departmentData => {
-  for (let i in departmentData) {
-    if (departmentData[i] == "") {
-      departmentData[i] = null;
+  return new Promise((resolve, reject) => {
+    for (let i in departmentData) {
+      if (departmentData[i] == "") {
+        departmentData[i] = null;
+      }
     }
-  }
-  return Department.create(departmentData)
-    .then(department => resolve(`Creation success: ${department}`))
-    .catch(err => reject(`Unable to create department`));
+    Department.create(departmentData, {
+      where: {
+        departmentId: departmentData.departmentId
+      }
+    })
+      .then(department => {
+        resolve(department)
+      })
+      .catch(err => reject(`Unable to create department`));
+  })
 };
 
 /**
@@ -182,7 +213,7 @@ exports.initialize = () => {
   return sqlPromise;
 };
 exports.getAllEmployees = () => {
-  return getAllEmployees();
+  return getAllEmployees()
 };
 exports.getDepartments = () => {
   return getDepartments();
@@ -207,6 +238,9 @@ exports.addEmployee = employeeData => {
 };
 exports.updateEmployee = employeeData => {
   return updateEmployee(employeeData);
+};
+exports.deleteEmployeeByNum = employeeNum => {
+  return deleteEmployeeByNum(employeeNum);
 };
 exports.addDepartment = departmentData => {
   return addDepartment(departmentData);

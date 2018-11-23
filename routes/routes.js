@@ -60,12 +60,16 @@ router.get("/employees", (req, res) => {
 });
 
 router.get("/employees/add", (req, res) => {
-  res.render("addEmployee");
+  dataService
+    .addEmployee()
+      .then(data => res.render("addEmployee", { employees: data }))
+      .catch(err => res.render("addEmployee", { departments: [] }));
 });
 
 router.post("/employees/add", (req, res) => {
-  let employeeToAdd = req.body;
-  dataService.addEmployee(employeeToAdd).then(() => res.redirect("/employees"));
+  dataService.addEmployee(req.body)
+  .then(() => res.redirect("/employees"))
+  .catch(err => res.status(500).send(`Error: ${err}`))
 });
 
 router.post("/employee/update", (req, res) => {
@@ -73,55 +77,101 @@ router.post("/employee/update", (req, res) => {
     .updateEmployee(req.body)
     .then(() => res.redirect("/employees"))
     .catch(err => console.log(err));
-});2
-
-
-router.get("/employee/:value", (req, res) => {
-  dataService
-    .getEmployeesByNum(req.params.value)
-    .then(data => res.render("employee", { employee: data }))
-    .catch(err => res.render({ message: err }));
 });
+
+router.get("/employee/:empNum", (req, res) => {
+  // initialize an empty object to store the values
+  let viewData = {};
+  dataService
+    .getEmployeeByNum(req.params.empNum)
+    .then(data => {
+      if (data) {
+        viewData.employee = data; //store employee data in the "viewData" object as "employee"
+      } else {
+        viewData.employee = null; // set employee to null if none were returned
+      }
+    })
+    .catch(() => {
+      viewData.employee = null; // set employee to null if there was an error
+    })
+    .then(dataService.getDepartments)
+    .then(data => {
+      viewData.departments = data; // store department data in the "viewData" object as "departments"
+      // loop through viewData.departments and once we have found the departmentId that matches
+      // the employee's "department" value, add a "selected" property to the matching
+      // viewData.departments object
+      for (let i = 0; i < viewData.departments.length; i++) {
+        if (
+          viewData.departments[i].departmentId == viewData.employee.department
+        ) {
+          viewData.departments[i].selected = true;
+        }
+      }
+    })
+    .catch(() => {
+      viewData.departments = []; // set departments to empty if there was an error
+    })
+    .then(() => {
+      if (viewData.employee == null) {
+        // if no employee - return an error
+        res.status(404).send("Employee Not Found");
+      } else {
+        res.render("employee", { viewData: viewData }); // render the "employee" view
+      }
+    });
+});
+
+router.get('/employees/delete/:empNum', (req, res) => {
+  dataService.deleteEmployeeByNum(req.params.empNum)
+    .then(data => res.redirect('/employees'))
+    .catch(err =>  res.status(500).send('Unable to Remove Employee / Employee not found'))
+})
 
 /**
  * Departments
  */
 router.get("/departments", (req, res) => {
+  dataService.getDepartments()
+    .then(data => {
+      if (data.length > 0)
+        res.render("departments", { departments: data })
+      else
+        res.render("departments", { message: "no results" })
+    })
+    .catch(err => res.render('departments', { message: 'no results' }));
+});
+
+router.get("/departments/add", (req, res) => {
+  res.render("addDepartment");
+});
+
+router.post("/departments/add", (req, res) => {
   dataService
-    .getDepartments()
-    .then(data =>
-      data.length > 0
-        ? res.render("departments", { data: data })
-        : res.render("departments", { message: "no results" })
-    )
-    .catch(err => res.render('departments', { message: "no results" }));
+    .addDepartment(req.body)
+    .then(data => res.redirect("/departments"))
+    .catch(err => res.status(500).send('Unable to add department'))
 });
 
-router.get('/departments/add', (req, res) => {
-  res.render('addDepartment');
-});
+router.post("/department/update", (req, res) => {
+  dataService
+    .updateDepartment(req.params)
+    .then(data => res.redirect("/departments"))
+    .catch(err => res.status(500).send('Unable to update department'))
 
-router.post('/departments/add', (req, res) => {
-  dataService.addDepartment(req.params)
-    .then(data => res.redirect('/departments'))
-});
-
-router.post('/department/update', (req, res) => {
-  dataService.updateDepartment(req.params)
-  .then(data => res.redirect('/departments'))
 });
 
 router.get("/department/:id", (req, res) => {
-  dataService.updateDepartment(req.params.id)
-    .then(data => res.render('department', { department: data }))
-    .catch(err => res.status(400).send('Department not found'));
-}); 
+  dataService
+    .updateDepartment(req.params.id)
+    .then(data => res.render("department", { department: data }))
+    .catch(err => res.status(400).send("Department not found"));
+});
 
-router.get('/departments/delete/:departmentId', (req, res) => {
-  dataService.deleteDepartmentById(req.params.id)
-    .then(data => res.redirect('/departments'))
-    .catch(err => res.status(500).send('Unable to Remove Department / Department not found'))
-})
+router.get("/departments/delete/:departmentId", (req, res) => {
+  dataService.deleteDepartmentById(req.params.departmentId)
+    .then(data => res.redirect("/departments"))
+    .catch(err => res.status(500).send("Unable to Remove Department / Department not found"));
+});
 
 /**
  * Adding Images
