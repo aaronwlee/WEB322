@@ -8,12 +8,12 @@
 *
 * Online (Heroku) Link: https://ljjunioweb322a5.herokuapp.com/departments
 *
-********************************************************************************/ 
+********************************************************************************/
 
-var express = require("express");
+var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
-var exphbs  = require('express-handlebars');
+var exphbs = require('express-handlebars');
 var PORT = process.env.PORT || 8080;
 var app = express();
 
@@ -23,25 +23,26 @@ require('dotenv').config();
 // Routes and data-service
 var routes = require('./routes/routes');
 var dataService = require('./data-service');
+var dataServiceAuth = require('./data-service-auth');
 
 // Configure view engine
 app.engine('.hbs', exphbs({
-    defaultLayout: 'main', 
-    extname: '.hbs',
-    helpers: {
-        navLink: function(url, options) {
-            return `<li` + ((url == app.locals.activeRoute) ? ' class="active" ' : '') + '><a href="' + url + '">' + options.fn(this) + '</a></li>'; 
-        },
-        equal: function(lvalue, rvalue, options) {
-            if (arguments.length < 3)
-                throw new Error("Handlebars helper equal needs 2 parameters");
-            if (lvalue != rvalue) {
-                return options.inverse(this);
-            } else {
-                return options.fn(this);
-            }
-        }
+  defaultLayout: 'main',
+  extname: '.hbs',
+  helpers: {
+    navLink: function (url, options) {
+      return `<li` + ((url == app.locals.activeRoute) ? ' class="active" ' : '') + '><a href="' + url + '">' + options.fn(this) + '</a></li>';
+    },
+    equal: function (lvalue, rvalue, options) {
+      if (arguments.length < 3)
+        throw new Error("Handlebars helper equal needs 2 parameters");
+      if (lvalue != rvalue) {
+        return options.inverse(this);
+      } else {
+        return options.fn(this);
+      }
     }
+  }
 }));
 app.set('view engine', '.hbs');
 
@@ -52,15 +53,16 @@ app.set('views', path.join(__dirname, '/views'));
 
 // Show correct active item
 app.use((req, res, next) => {
-    let route = req.baseUrl + req.path;
-    app.locals.activeRoute = (route == "/") ? "/" : route.replace(/\/$/, "");
-    console.log(`Route: ${app.locals.activeRoute}`);
-    next();
+  let route = req.baseUrl + req.path;
+  app.locals.activeRoute = (route == "/") ? "/" : route.replace(/\/$/, "");
+  console.log(`Route: ${app.locals.activeRoute}`);
+  next();
 });
 
 app.use('/', routes);
 
 dataService.initialize()
-    .then(() => app.listen(PORT, () => console.log(`Listening on port ${PORT}`)))
-    .catch(err => res.json({ message: err}))
+  .then(dataServiceAuth.initialize)
+  .then(() => app.listen(PORT, () => console.log(`app listening on: ${PORT}`)))
+  .catch(err => console.log(`unable to start server: ${err}`));
 
