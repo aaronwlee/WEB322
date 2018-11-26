@@ -1,5 +1,5 @@
 /*********************************************************************************
-* WEB322 – Assignment 04
+* WEB322 – Assignment 06
 * I declare that this assignment is my own work in accordance with Seneca Academic Policy. No part
 * of this assignment has been copied manually or electronically from any other source
 * (including 3rd party web sites) or distributed to other students.
@@ -10,20 +10,22 @@
 *
 ********************************************************************************/
 
-var express = require('express');
-var path = require('path');
-var bodyParser = require('body-parser');
-var exphbs = require('express-handlebars');
-var PORT = process.env.PORT || 8080;
-var app = express();
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const exphbs = require('express-handlebars');
+const clientSessions = require('client-sessions');
+
+const PORT = process.env.PORT || 8080;
+const app = express();
 
 // .env file
 require('dotenv').config();
 
 // Routes and data-service
-var routes = require('./routes/routes');
-var dataService = require('./data-service');
-var dataServiceAuth = require('./data-service-auth');
+const routes = require('./routes/routes');
+const dataService = require('./data-service');
+const dataServiceAuth = require('./data-service-auth');
 
 // Configure view engine
 app.engine('.hbs', exphbs({
@@ -44,7 +46,32 @@ app.engine('.hbs', exphbs({
     }
   }
 }));
+
 app.set('view engine', '.hbs');
+
+/**
+ * Middlewares
+ */
+
+const ensureLogin = (req, res, next) => {
+  if (!req.session.user)
+    res.redirect('/login');
+  else
+    next();
+}
+
+// setup client sessions
+app.use(clientSessions({
+  cookieName: 'session',
+  secret: 'web322assignment6',
+  duration: 2 * 60 * 1000,
+  activeDuration: 1000 * 60
+}));
+
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
 
 // Configure the public folder
 app.use(express.static('public'));
