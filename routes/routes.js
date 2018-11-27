@@ -235,12 +235,15 @@ router.post('/login', (req, res) => {
   dataServiceAuth.checkUser(req.body)
     .then(user => {
       req.session.user = {
-        userName: req.body.userName,
-        email: req.body.email,
-        loginHistory: req.body.loginHistory
+        userName: user.userName,
+        email: user.email,
+        loginHistory: user.loginHistory
       }
       res.redirect('/employees');
     })
+    .catch(err => {
+      res.render('login', { errorMessage: err, userName: req.body.userName });
+    });
 });
 
 router.get('/logout', (req, res) =>{
@@ -248,7 +251,7 @@ router.get('/logout', (req, res) =>{
   res.redirect('/');
 });
 
-router.get('/userHistory', (req, res) => {
+router.get('/userHistory', ensureLogin, (req, res) => {
   res.render('userHistory')
 });
 
