@@ -248,6 +248,10 @@ router.get('/logout', (req, res) =>{
   res.redirect('/');
 });
 
+router.get('/userHistory', (req, res) => {
+  res.render('userHistory')
+});
+
 router.get("*", (req, res) => {
   res.status(`The page does not exist`);
   res.sendStatus(404);
