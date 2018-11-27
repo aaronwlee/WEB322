@@ -14,7 +14,6 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
-const clientSessions = require('client-sessions');
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -52,26 +51,6 @@ app.set('view engine', '.hbs');
 /**
  * Middlewares
  */
-
-const ensureLogin = (req, res, next) => {
-  if (!req.session.user)
-    res.redirect('/login');
-  else
-    next();
-}
-
-// setup client sessions
-app.use(clientSessions({
-  cookieName: 'session',
-  secret: 'web322assignment6',
-  duration: 2 * 60 * 1000,
-  activeDuration: 1000 * 60
-}));
-
-app.use((req, res, next) => {
-  res.locals.session = req.session;
-  next();
-});
 
 // Configure the public folder
 app.use(express.static('public'));
