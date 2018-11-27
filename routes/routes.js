@@ -239,8 +239,14 @@ router.post('/login', (req, res) => {
         email: req.body.email,
         loginHistory: req.body.loginHistory
       }
+      res.redirect('/employees');
     })
-})
+});
+
+router.get('/logout', (req, res) =>{
+  req.session.reset();
+  res.redirect('/');
+});
 
 router.get("*", (req, res) => {
   res.status(`The page does not exist`);
