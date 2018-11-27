@@ -4,6 +4,7 @@ var multer = require("multer");
 var path = require("path");
 const router = express.Router();
 var dataService = require("../data-service");
+var dataServiceAuth = require('../data-service-auth');
 
 const clientSessions = require('client-sessions');
 
@@ -211,6 +212,35 @@ router.get("/images", ensureLogin, (req, res) => {
     }
   });
 });
+
+/**
+ * Sessions
+ */
+router.get('/login', (req, res) => {
+  res.render('login');
+});
+
+router.get('/register', (req, res) => {
+  res.render('register');
+});
+
+router.post('/register', (req, res) => {
+  dataServiceAuth.registerUser(req.body)
+    .then(() => res.render('register', { successMessage: 'User created' }))
+    .catch(err => res.render('register', { errorMessage: err, userName: req.body.userName }));
+});
+
+router.post('/login', (req, res) => {
+  req.body.userAgent = req.get('User-Agent');
+  dataServiceAuth.checkUser(req.body)
+    .then(user => {
+      req.session.user = {
+        userName: req.body.userName,
+        email: req.body.email,
+        loginHistory: req.body.loginHistory
+      }
+    })
+})
 
 router.get("*", (req, res) => {
   res.status(`The page does not exist`);
