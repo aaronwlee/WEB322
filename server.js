@@ -72,3 +72,4 @@ dataService.initialize()
   .then(() => app.listen(PORT, () => console.log(`app listening on: ${PORT}`)))
   .catch(err => console.log(`unable to start server: ${err}`));
 
+module.exports = app;

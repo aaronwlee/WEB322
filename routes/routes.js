@@ -15,6 +15,8 @@ const ensureLogin = (req, res, next) => {
     next();
 }
 
+const app = require('../server');
+
 // setup client sessions
 app.use(clientSessions({
   cookieName: 'session',
