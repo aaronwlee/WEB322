@@ -1,4 +1,6 @@
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 
 var exports = (module.exports = {});
@@ -10,7 +12,25 @@ const userSchema = new Schema({
   loginHistory: [{ dateTime: Date, userAgent: String }],
 });
 
+// Before saving
+userSchema.pre('save', (next) => {
+  const user = this;
+  if (!user.isModified('password'))
+    return next();
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err)
+      return next(err);
+    bcrypt.hash(user.password, salt, (err, hash) => {
+      if (err)
+        return next(err);
+      user.password = hash;
+      next();
+    });
+  });
+});
+
 let User = mongoose.model('User', userSchema);
+
 /**
  * Initializes a connection to the mongodb database that's provided within the .env file
  */
@@ -39,15 +59,16 @@ exports.registerUser = (userData) => {
     if (userData.password !== userData.password2)
       reject('Passwords do not match');
     else {
-      let newUser = new User(userData);
-      newUser.save((err, newUser) => {
-        if (err && err.code == 11000)
-          reject('User Name already taken');
-        else if(err && err.code != 11000)
-          reject(`There was an error creating the user: ${err}`);
-        else
+      newUser.save()
+        .then(() => {
           resolve();
-      });
+        })
+        .catch(err => {
+          if (err.code == 11000)
+            reject('user name already taken')
+          else if (err.code != 11000)
+            reject(`There was an error creating the user: ${err}`);
+        });
     }
   });
 }
@@ -60,24 +81,28 @@ exports.registerUser = (userData) => {
  */
 exports.checkUser = (userData) => {
   return new Promise((resolve, reject) => {
-    User.find({ user: userData.userName }, (err, users) => {
-      if (err)
+    User.find({ user: userData.userName })
+      .then(users => {
+        bcrypt.compare(userData.password, users[0].password)
+          .then((res) => {
+            users[0].loginHistory.push({ dateTime: (new Date()).toString(), userAgent: userData.userAgent });
+            User.update({ userName: users[0].userName },
+              { $set: { loginHistory: users[0].loginHistory } },
+              { multi: false })
+              .exec()
+              .then(() => {
+                resolve(users[0]);
+              })
+              .catch((err) => {
+                reject(`There was an error verifying the user: ${err}`);
+              });
+          })
+          .catch((err) => {
+            reject(`Incorrect Password for user: ${userData.userName}`);
+          })
+      })
+      .catch(err => {
         reject(`Unable to find user: ${userData.userName}`);
-      else {
-        if (users.length == 0)
-          reject(`Unable to find user: ${userData.userName}`);
-        if (users[0].password !== userData.password)
-          reject(`Incorrect Password for user: ${userData.userName}`);
-        if (users[0].password === userData.password) {
-          users[0].loginHistory.push({ dateTime: (new Date()).toString(), userAgent: userData.userAgent });
-          User.update({ userName: users[0].userName }, { $set: { loginHistory: users[0].loginHistory } }, (err, raw) => {
-            if (err)
-              reject(`There was an error verifying the user: ${err}`);
-            else
-              resolve(users[0]);
-          });
-        }
-      }
-    })
+      })
   });
 }

@@ -16,7 +16,7 @@ const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 
 const PORT = process.env.PORT || 8080;
-const app = express();
+const app = module.exports = express();
 
 // .env file
 require('dotenv').config();

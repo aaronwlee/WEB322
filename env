@@ -1,0 +1,5 @@
+DB_HOST=ec2-54-163-230-178.compute-1.amazonaws.com
+DB_DATABASE=d8kthqhqmm7r0r
+DB_USERNAME=uzjvelizupzzkb
+DB_PASSWORD=f447d46cbebde5ce21812832f0fad39651fd2ebb655ee93b41bbaecb549ccf6d
+DB_PORT=5432

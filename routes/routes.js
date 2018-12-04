@@ -8,14 +8,14 @@ var dataServiceAuth = require('../data-service-auth');
 
 const clientSessions = require('client-sessions');
 
+const app = require('../server');
+
 const ensureLogin = (req, res, next) => {
   if (!req.session.user)
     res.redirect('/login');
   else
     next();
 }
-
-const app = require('../server');
 
 // setup client sessions
 app.use(clientSessions({
