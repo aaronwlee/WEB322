@@ -81,8 +81,9 @@ exports.registerUser = (userData) => {
  * - Checks if password mat ches any of the passwords from the matching userName
  */
 exports.checkUser = (userData) => {
+  console.log(userData)
   return new Promise((resolve, reject) => {
-    User.find({ user: userData.userName })
+    User.find({ userName: userData.userName })
       .then(users => {
         bcrypt.compare(userData.password, users[0].password)
           .then((res) => {

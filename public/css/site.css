@@ -1,0 +1,21 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+body {
+  font-family: "Roboto", sans-serif;
+  background: rgb(2, 0, 36);
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(9, 9, 121, 1) 10%,
+    rgba(0, 212, 255, 1) 100%
+  );
+}
+
+h1, h2, h3, h4, h5, h6, p, table, a, form, legend {
+  color: white;
+}
+
+a:hover {
+  color: wheat;
+  font-style: italic;
+}

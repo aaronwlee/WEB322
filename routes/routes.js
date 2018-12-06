@@ -21,8 +21,8 @@ const ensureLogin = (req, res, next) => {
 app.use(clientSessions({
   cookieName: 'session',
   secret: 'web322assignment6',
-  duration: 2 * 60 * 1000,
-  activeDuration: 1000 * 60
+  duration: 5 * 60 * 1000,
+  activeDuration: 5 * 1000 * 60
 }));
 
 app.use((req, res, next) => { 
@@ -86,8 +86,8 @@ router.get("/employees", ensureLogin, (req, res) => {
 
 router.get("/employees/add", ensureLogin, (req, res) => {
   dataService
-    .addEmployee()
-      .then(data => res.render("addEmployee", { employees: data }))
+    .getDepartments()
+      .then(data => res.render("addEmployee", { departments: data }))
       .catch(err => res.render("addEmployee", { departments: [] }));
 });
 
