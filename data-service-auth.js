@@ -13,7 +13,7 @@ const userSchema = new Schema({
 });
 
 // Before saving
-userSchema.pre('save', (next) => {
+userSchema.pre('save', function(next) {
   const user = this;
   if (!user.isModified('password'))
     return next();
@@ -59,6 +59,7 @@ exports.registerUser = (userData) => {
     if (userData.password !== userData.password2)
       reject('Passwords do not match');
     else {
+      let newUser = User(userData);
       newUser.save()
         .then(() => {
           resolve();
@@ -77,7 +78,7 @@ exports.registerUser = (userData) => {
  * Checks the existing database for a specific user with the same information as the passed parameter:
  * @param {Object} - contains the user data to be checked within the database
  * - Checks if userData.userName is found
- * - Checks if password matches any of the passwords from the matching userName
+ * - Checks if password mat ches any of the passwords from the matching userName
  */
 exports.checkUser = (userData) => {
   return new Promise((resolve, reject) => {

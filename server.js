@@ -15,7 +15,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 
-const PORT = process.env.PORT || 8080;
+// const PORT = process.env.PORT || 8080;
+const PORT = 8080;
 const app = module.exports = express();
 
 // .env file
